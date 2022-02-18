@@ -1,0 +1,90 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins/breakpoints";
+
+.container-fluid {
+  .summary {
+    max-width: 25%;
+    align-self: flex-start;
+    position: sticky;
+    top: 10em;
+    background-color: rgba(211, 211, 211, 0.3);
+    flex-grow: 1;
+  }
+  .stepper {
+    max-width: 70%;
+    flex-grow: 2;
+  }
+}
+
+.selectbtn {
+  border-radius: 3em;
+  i.fa {
+    transition: 300ms ease;
+  }
+}
+
+.extras-section {
+  position: relative;
+  max-height: 0px;
+  transition: 300ms ease;
+  overflow: hidden;
+  padding: 0;
+}
+
+.extras-section::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  border-top: 1px solid rgba(212, 212, 212, 0.5);
+}
+
+.extras-active {
+  transition: 300ms ease;
+  max-height: 10em;
+  padding: 1em 0 0 1em;
+  i.fa {
+    transform: rotate(180deg);
+  }
+}
+
+.contact-details-step {
+  legend {
+    background-color: rgba(211, 211, 211, 0.5);
+  }
+}
+
+.payment {
+  .breakup {
+    background-color: rgba(211, 211, 211, 0.2);
+    min-width: 30%;
+    max-width: 100%;
+    align-self: flex-start;
+  }
+}
+
+.payment-form {
+  max-width: 60%;
+  border-radius: 1em;
+  padding: 2em;
+}
+
+@include media-breakpoint-down(sm) {
+  .container-fluid {
+    .summary {
+      max-width: 100%;
+      position: unset;
+    }
+    .stepper {
+      max-width: 100%;
+      flex-grow: 2;
+    }
+  }
+  .payment-form {
+    max-width: 100%;
+    padding: 1em;
+    margin-top: 1em;
+  }
+}

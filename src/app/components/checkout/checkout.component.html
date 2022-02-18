@@ -1,0 +1,332 @@
+<div class="container-fluid" *ngIf="data">
+    <div class="d-flex mw-100 flex-wrap">
+        <div class="summary mx-auto m-3 p-4">
+            <div class="fw-bold fs-5 mb-4">Summary</div>
+            <div class="text-muted mb-2">Service type</div>
+            <span [ngSwitch]="data.rideType" class="fs-6">
+                <p *ngSwitchCase="'from-airport'">
+                    From Airport
+                </p>
+                <p *ngSwitchCase="'to-airport'">
+                    To Airport
+                </p>
+                <p *ngSwitchCase="'door-to-door'">
+                    Door to Door
+                </p>
+                <p *ngSwitchCase="'hourly'">
+                    Hourly
+                </p>
+                <p *ngSwitchDefault>
+                    N/A
+                </p>
+            </span>
+            <hr>
+            <div class="text-muted mb-2">From</div>
+            <div class="mb-3 fs-6">{{data.origin_address}}</div>
+            <div class="text-muted mb-2">To</div>
+            <div class="fs-6">{{data.destination_address}}</div>
+            <hr>
+            <div class="text-muted mb-2">Pickup Date and Time</div>
+            <div class="fs-6">{{getDate(data.date)}}, {{data.time}}</div>
+            <hr>
+            <div class="w-100 d-flex">
+                <div class="w-50">
+                    <div class="text-muted mb-2">Total Distance</div>
+                    <div class="fs-6">{{data.distance.text}}</div>
+                </div>
+                <div class="w-50">
+                    <div class="text-muted mb-2">Total Duration</div>
+                    <div class="fs-6">{{data.duration.text}}</div>
+                </div>
+            </div>
+            <div class="w-100 d-flex flex-column" *ngIf="vehicleSelectionStep.completed">
+                <hr>
+                <div class="w-100 mb-2">
+                    <div class="text-muted mb-2">Vehicle</div>
+                    <div class="fs-6">{{selectedVehicle?.name}}</div>
+                </div>
+                <div class="w-100" *ngIf="selectedVehicle?.child_seats">
+                    <hr>
+                    <div class="text-muted mb-2">Extra Options</div>
+                    <div class="fs-6">{{selectedVehicle?.child_seats+"x Child seats"}} - ${{selectedVehicle?.child_seats
+                        * 5}}.00</div>
+                </div>
+            </div>
+            <div class="w-100" *ngIf="contactDetailsStep.completed">
+                <hr>
+                <div class="w-100 mb-2">
+                    <div class="text-muted mb-2">Contact details</div>
+                    <div class="fs-6 mb-2">{{contactForm.value.fullname}}</div>
+                    <div class="fs-6 mb-2">{{contactForm.value.email}}</div>
+                    <div class="fs-6 mb-2">{{contactForm.value.phone}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="stepper m-sm-3">
+            <mat-stepper linear="isLinear" color='warn' labelPosition='bottom'
+                [orientation]="(stepperOrientation | async)!" #stepper>
+                <mat-step [stepControl]='vehicleForm' label="Choose your ride" [editable]="stepper.selectedIndex !== 3"
+                    #vehicleSelectionStep>
+                    <div class="d-flex mb-3 flex-wrap text-muted my-4 justify-content-between align-items-center">
+                        <span class="flex-grow-1">{{data.vehicles.length}} vehicle(s) found</span>
+                        <button mat-flat-button color='accent' class="py-2 px-3 fs-6 mt-sm-0 mt-2"
+                            [disabled]='vehicleForm.invalid' matStepperNext>Proceed to
+                            Contact details&nbsp;&nbsp;
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i></button>
+                    </div>
+                    <div class="card mb-3" [class.border-success]='selectedVehicle?.name === vehicle.name'
+                        [class.border-2]='selectedVehicle?.name === vehicle.name' *ngFor="let vehicle of data.vehicles">
+                        <div class="row g-0">
+                            <div class="col-md-4 border-end align-items-center d-flex">
+                                <img [src]="vehicle.photos[0].path" class="img-fluid rounded-start">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between flex-wrap">
+                                        <div>
+                                            <h5 class="card-title fs-5 mb-4">{{vehicle.name}}</h5>
+                                            <div class="card-text">
+                                                <p class="fs-3 fw-bold color-primary"><span
+                                                        class="fw-normal fs-4">$</span>{{vehicle.total_fare | number:
+                                                    '1.2-2'}}
+                                                </p>
+
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <button mat-flat-button
+                                                class="align-self-center px-5 py-2 border fs-6 selectbtn"
+                                                (click)="toggleVehicle(vehicle)"
+                                                [class.text-muted]='selectedVehicle?.name !== vehicle.name'
+                                                [color]='selectedVehicle?.name === vehicle.name ? "accent":"" '>
+                                                <i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;
+                                                Select</button>
+
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center flex-wrap py-2">
+                                        <div class="order-sm-1 order-2">
+                                            <button mat-flat-button *ngIf="selectedVehicle?.name === vehicle.name"
+                                                (click)="toggleExtras(extras,arrow)"
+                                                class="px-5 py-2 border fs-6 selectbtn text-muted">
+                                                <i class="fa fa-chevron-down" #arrow
+                                                    aria-hidden="true"></i>&nbsp;&nbsp;Extra
+                                                Options</button>
+                                            <span></span>
+                                        </div>
+                                        <div class="d-flex mt-2 order-sm-2 order-1">
+                                            <div class="m-3 d-flex align-items-center">
+                                                <i class="fas fa-user-friends text-muted fa-2x"></i>
+                                                <div
+                                                    class="d-inline-block py-2 px-3 border text-muted rounded-circle ms-3">
+                                                    {{ vehicle.passenger_capacity }}</div>
+                                            </div>
+                                            <div class="m-3 d-flex align-items-center">
+                                                <i class="fa fa-suitcase text-muted fa-2x"></i>
+                                                <div
+                                                    class="d-inline-block py-2 px-3 border text-muted rounded-circle ms-3">
+                                                    {{vehicle.luggage_capacity}}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-transparent extras-section" [hidden]="selectedVehicle?.name !== vehicle.name"
+                            #extras>
+                            <span class="fs-6 fw-bold">Child Seats &nbsp;&nbsp;<span
+                                    class="color-primary">$5.00</span></span>
+                            &nbsp;&nbsp;&nbsp;
+                            <mat-form-field appearance="outline" *ngIf="selectedVehicle?.name === vehicle.name">
+                                <mat-label>Select number seats</mat-label>
+                                <mat-select (selectionChange)='assignChildSeats($event)'>
+                                    <mat-option empty>
+                                        Select seats
+                                    </mat-option>
+                                    <mat-option
+                                        *ngFor="let seat of generateChildSeats(vehicle.child_seat_capacity); index as i"
+                                        [value]="i+1">
+                                        {{i+1}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="d-flex">
+                        <span class="flex-grow-1"></span>
+                        <button mat-flat-button color='accent' [disabled]='vehicleForm.invalid' class="py-2 px-3 fs-6"
+                            matStepperNext>Proceed to
+                            Contact details&nbsp;&nbsp;
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i></button>
+                    </div>
+                </mat-step>
+                <mat-step [stepControl]='contactForm' label="Enter contact details"
+                    [editable]="stepper.selectedIndex !== 3" #contactDetailsStep>
+                    <form class="my-4 contact-details-step needs-validation" [formGroup]='contactForm' novalidate>
+                        <legend class="py-3 px-3 border mb-0 text-black-50">Contact Details</legend>
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-sm border p-3">
+                                    <mat-form-field appearance='outline' class="w-100">
+                                        <mat-label class="form-label text-muted">Full Name</mat-label>
+                                        <input matInput type="text" class="border-0" formControlName='fullname'
+                                            required>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-sm border p-3">
+                                    <mat-form-field appearance='outline' class="w-100">
+                                        <mat-label class="form-label text-muted">Email</mat-label>
+                                        <input matInput type="email" class="border-0" formControlName='email' required>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm border p-3">
+                                    <mat-form-field appearance='outline' class="w-100">
+                                        <mat-label class="form-label text-muted">Phone Number</mat-label>
+                                        <input matInput type="text" class="border-0" formControlName='phone' required>
+                                        <span matPrefix>+1 &nbsp;</span>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-sm border p-3">
+                                    <mat-form-field appearance='outline' class="w-100">
+                                        <mat-label class="form-label text-muted">Any special instructions</mat-label>
+                                        <textarea matInput rows="2" class="border-0"
+                                            formControlName='instructions'></textarea>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between flex-wrap my-3">
+                            <button class="px-3 py-2 fs-6" mat-flat-button matStepperPrevious><i
+                                    class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp;&nbsp;Choose vehicle</button>
+                            <button type="submit" class="px-3 py-2 fs-6" mat-flat-button color='accent'
+                                matStepperNext>Proceed to
+                                payments&nbsp;&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i></button>
+                        </div>
+                    </form>
+                </mat-step>
+                <mat-step label="Enter payment details" [stepControl]='paymentForm'
+                    [editable]="stepper.selectedIndex !== 3" #paymentStep>
+                    <div class="d-flex flex-wrap payment">
+                        <div class="breakup border p-2 p-sm-3 rounded flex-grow-1 me-sm-2">
+                            <table class="table table-borderless">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="2" class="my-2 fw-bold fs-6">Price breakup</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <hr class="w-50">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-black-50">vehicle fare</td>
+                                        <td class="text-end pe-2">${{(selectedVehicle?.total_fare || 0) | number:
+                                            '1.2-2'}}</td>
+                                    </tr>
+                                    <tr *ngIf="selectedVehicle?.child_seats">
+                                        <td class="text-black-50">child seats (x{{selectedVehicle?.child_seats}})</td>
+                                        <td class="text-end pe-2">${{selectedVehicle?.child_seats * 5 | number:
+                                            '1.2-2'}}</td>
+                                    </tr>
+                                    <tr *ngIf="data.toll_price">
+                                        <td class="text-black-50">airport toll</td>
+                                        <td class="text-end pe-2">${{data.toll_price | number: '1.2-2'}}
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="data.morning_rush_hour_price">
+                                        <td class="text-black-50">morning rush hour surge</td>
+                                        <td class="text-end pe-2">${{data.morning_rush_hour_price | number: '1.2-2'}}
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="data.night_rush_hour_price">
+                                        <td class="text-black-50">night rush hour surge</td>
+                                        <td class="text-end pe-2">${{data.night_rush_hour_price | number: '1.2-2'}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-black-50">gratuity</td>
+                                        <td class="text-end pe-2">
+                                            ${{getTotalFare()*20/100 | number: '1.2-2'}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <hr>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-black-50 fw-bold">Total fare</td>
+                                        <td class="text-end fw-bold text-success">
+                                            ${{(getTotalFare() + (getTotalFare()*20/100)) | number: '1.2-2'}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <form [formGroup]='paymentForm' (submit)="makePayment()" novalidate autocomplete="off"
+                            class="payment-form mx-auto border">
+                            <legend>Enter credit card details</legend>
+                            <mat-form-field appearance="outline" class="w-100 mt-4">
+                                <mat-label>Card holder's name</mat-label>
+                                <input matInput formControlName="fullName" required />
+                            </mat-form-field>
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Card number</mat-label>
+                                <input matInput formControlName="cardNumber" placeholder="0000 0000 0000 0000"
+                                    required />
+                                <mat-icon matSuffix>credit_card</mat-icon>
+                            </mat-form-field>
+                            <div class="d-flex flex-wrap">
+                                <div>
+                                    <div class="w-100 my-2">
+                                        <mat-label>Expiry date</mat-label>
+                                    </div>
+                                    <mat-form-field appearance="outline">
+                                        <mat-label>Month</mat-label>
+                                        <mat-select formControlName="month" required>
+                                            <mat-option *ngFor="let month of months" [value]="month.num">
+                                                ({{month.num}}) {{month.value}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline" class="ms-sm-2">
+                                        <mat-label>Year</mat-label>
+                                        <mat-select formControlName="year" required>
+                                            <mat-option *ngFor="let year of years" [value]="year">
+                                                {{year}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <mat-form-field appearance="outline" class="m-1">
+                                    <mat-label>cvv</mat-label>
+                                    <input matInput formControlName="cardCode" required />
+                                </mat-form-field>
+                            </div>
+                            <div class="d-flex justify-content-center">
+                                <button mat-flat-button color='primary' [disabled]='paying' class="w-50">
+                                    <div class="spinner-border spinner-border-sm" role="status" *ngIf="paying">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>&nbsp;
+                                    {{paying ?
+                                    "Paying..." : "Pay $"+(getTotalFare() + getTotalFare()*20/100 | number: '1.2-2')
+                                    }}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </mat-step>
+                <mat-step label="Booking Summary">
+                    <div class="container p-4 text-center">
+                        <p class="text-center fw-bold text-success mt-4" *ngIf="booking">Your booking has been made
+                            succesfully with booking#
+                            {{booking.booking_id}}.</p>
+                        <button class="mt-2" [routerLink]='"/"' mat-raised-button color='primary'>Go to Home</button>
+                    </div>
+                </mat-step>
+            </mat-stepper>
+        </div>
+    </div>
+</div>

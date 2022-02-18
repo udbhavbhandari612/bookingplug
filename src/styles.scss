@@ -1,0 +1,24 @@
+/* You can add global styles to this file, and also import other style files */
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&display=swap");
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  background-color: rgb(133, 133, 133, 0.2);
+}
+
+* {
+  font-family: Roboto, "Open Sans", sans-serif;
+}
+
+.color-primary {
+  color: #daa520;
+}
+
+.form {
+  padding-top: 1em;
+  background: rgba(255, 255, 255, 0.9);
+}

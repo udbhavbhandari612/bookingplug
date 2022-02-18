@@ -1,0 +1,21 @@
+<div class="container p-4 w-100">
+    <div class="fs-1 fw-bold color-primary">Let's Get Booking</div>
+    <div class="fs-6 mt-4 text-white subtitle">Punctual and Reliable Limousine Service in NYC. NYC Limousine’s provides
+        first-class
+        chauffeured transportation with value-based pricing and skillful customer service. Book your ride online now and
+        save up to 30% on airport transportation. It’s easy!</div>
+    <div class="mt-3">
+        <mat-button-toggle-group name="tripType" (change)='typeChanged($event)' class="w-100">
+            <mat-button-toggle class="text-white" class="flex-grow-1" checked value="from-airport">From Aiport
+            </mat-button-toggle>
+            <mat-button-toggle class="text-white" class="flex-grow-1" value="to-airport">To Airport</mat-button-toggle>
+            <mat-button-toggle class="text-white" class="flex-grow-1" value="hourly">Hourly</mat-button-toggle>
+            <mat-button-toggle class="text-white" class="flex-grow-1" value="door-to-door">Door to Door
+            </mat-button-toggle>
+        </mat-button-toggle-group>
+        <app-from-airport *ngIf="active === 'from-airport'"></app-from-airport>
+        <app-to-airport *ngIf="active === 'to-airport'"></app-to-airport>
+        <app-hourly *ngIf="active ==='hourly'"></app-hourly>
+        <app-door-to-door *ngIf="active ==='door-to-door'"></app-door-to-door>
+    </div>
+</div>

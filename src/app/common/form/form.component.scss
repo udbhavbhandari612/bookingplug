@@ -1,0 +1,21 @@
+.container {
+  background-color: rgba(0, 0, 0, 0.5);
+  .subtitle {
+    line-height: 1.5rem;
+  }
+}
+
+.mat-button-toggle-group-appearance-standard {
+  border-radius: 0;
+  border: none;
+}
+.mat-button-toggle-appearance-standard {
+  background: rgba(128, 128, 128, 0.6);
+  color: white;
+  border: none !important;
+}
+.mat-button-toggle-checked {
+  background: var(--primary-color);
+  color: black;
+  border: none !important;
+}

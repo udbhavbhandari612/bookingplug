@@ -1,0 +1,19 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins/breakpoints";
+
+.container-fluid {
+  padding: 0;
+  .form-position {
+    position: relative;
+    top: 10em;
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  .container-fluid {
+    .form-position {
+      top: 5em;
+    }
+  }
+}

@@ -1,0 +1,28 @@
+<form class="form form-floating" autocomplete="off" [formGroup]='formGroup' (submit)='submit()' novalidate>
+    <mat-form-field class="w-100 px-2" appearance="legacy" floatLabel='always'>
+        <mat-label>Select the airport</mat-label>
+        <mat-select formControlName='start' required placeholder="Select an Airport">
+            <mat-option *ngFor="let airport of airports" [value]="airport.place_id">
+                {{airport.name+', '+airport.vicinity}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field class="w-100 px-2" appearance="legacy" floatLabel='always'>
+        <mat-label>Destination</mat-label>
+        <input matInput placeholder="Destination Address" formControlName='destination' #destination required>
+    </mat-form-field>
+    <mat-form-field class="px-2 w-50" appearance="legacy" floatLabel='always'>
+        <mat-label>Choose a date</mat-label>
+        <input matInput [matDatepicker]="picker" [min]="minDate" (focus)="picker.open()" formControlName='date'
+            placeholder="MM/DD/YYYY" required>
+        <mat-icon matSuffix>calendar_today</mat-icon>
+        <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field class="px-2 w-50" appearance="legacy" floatLabel='always'>
+        <mat-label>Choose a time</mat-label>
+        <input matInput placeholder="HH:MM" type="time" formControlName='time' required>
+    </mat-form-field>
+    <button type="submit" mat-flat-button class="w-100 fs-5 fw-normal">Calculate My
+        Ride</button>
+
+</form>
