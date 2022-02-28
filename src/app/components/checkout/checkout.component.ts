@@ -28,6 +28,8 @@ export class CheckoutComponent implements OnInit {
   years: any = years(10);
   booking: any;
   paying: boolean = false;
+  agreed: boolean = false;
+  meetAndGreet = new FormControl(false);
   vehicleForm: FormGroup = new FormGroup({
     vehicle: new FormControl('', [Validators.required])
   });
@@ -42,7 +44,8 @@ export class CheckoutComponent implements OnInit {
     cardNumber: new FormControl('', [Validators.required, Validators.minLength(16), Validators.maxLength(16)]),
     month: new FormControl('', [Validators.required, Validators.min(1), Validators.max(12)]),
     year: new FormControl('', [Validators.required, Validators.min(new Date().getFullYear())]),
-    cardCode: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(3)])
+    cardCode: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(3)]),
+    agreed: new FormControl(false, [Validators.required])
   });
 
   constructor(private router: Router, private breakpointObserver: BreakpointObserver, private backend: BackendService) { }
@@ -65,13 +68,17 @@ export class CheckoutComponent implements OnInit {
       alert('Please fill card details correctly')
       return
     }
+    if (!this.paymentForm.value.agreed) {
+      alert('Please agree with terms and conditions to proceed')
+      return
+    }
     this.paying = true;
     Accept.dispatchData({
       authData: {
         clientKey: environment.authorizenet_client_id,
         apiLoginID: environment.authorizenet_api_login_id,
       },
-      cardData: { ...this.paymentForm.value }
+      cardData: { ..._.omit(this.paymentForm.value, ['agreed']) }
     }, (res) => {
       this.payload = {
         ..._.omit(this.data, ['vehicles']),
@@ -82,7 +89,7 @@ export class CheckoutComponent implements OnInit {
           card_number: this.paymentForm.get('cardNumber').value,
           exp: this.paymentForm.get('month').value + this.paymentForm.get('year').value.toString().slice(-2)
         },
-
+        meet_and_greet: this.meetAndGreet
       }
 
       if (res.messages.resultCode === 'Ok') {
@@ -111,6 +118,7 @@ export class CheckoutComponent implements OnInit {
       this.vehicleForm.patchValue({ vehicle: null })
     }
     else {
+      this.meetAndGreet.setValue(false);
       this.selectedVehicle = { ...vehicle }
       this.vehicleForm.patchValue({ vehicle: this.selectedVehicle })
 
@@ -147,7 +155,7 @@ export class CheckoutComponent implements OnInit {
   }
 
   getTotalFare(formatted?: boolean) {
-    const price = ((this.data.toll_price || 0) + (this.data.morning_rush_hour_price || 0) + (this.data.night_Frush_hour_price || 0) + (this.selectedVehicle?.total_fare || 0) + (this.selectedVehicle?.child_seats || 0) * 5) || 0
+    const price = ((this.data.toll_price || 0) + (this.meetAndGreet.value ? 5 : 0) + (this.data.morning_rush_hour_price || 0) + (this.data.night_rush_hour_price || 0) + (this.selectedVehicle?.total_fare || 0) + (this.selectedVehicle?.child_seats || 0) * 5) || 0
     return formatted ? formatNumber(price, null, '1.2-2') : price
   }
 
