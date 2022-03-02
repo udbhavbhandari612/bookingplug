@@ -14,6 +14,7 @@ import { FromAirportComponent } from './common/form/from-airport/from-airport.co
 import { ToAirportComponent } from './common/form/to-airport/to-airport.component';
 import { DoorToDoorComponent } from './common/form/door-to-door/door-to-door.component';
 import { CheckoutComponent } from './components/checkout/checkout.component';
+import { HeaderComponent } from './components/header/header.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { CheckoutComponent } from './components/checkout/checkout.component';
     FromAirportComponent,
     ToAirportComponent,
     DoorToDoorComponent,
-    CheckoutComponent
+    CheckoutComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,

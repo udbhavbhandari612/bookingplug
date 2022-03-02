@@ -6,14 +6,14 @@
   padding: 0;
   .form-position {
     position: relative;
-    top: 10em;
+    top: 3em;
   }
 }
 
 @include media-breakpoint-down(sm) {
   .container-fluid {
     .form-position {
-      top: 5em;
+      top: 2em;
     }
   }
 }

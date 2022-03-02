@@ -1,3 +1,7 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins/breakpoints";
+
 .container {
   background-color: rgba(0, 0, 0, 0.5);
   .subtitle {
@@ -18,4 +22,10 @@
   background: var(--primary-color);
   color: black;
   border: none !important;
+}
+
+@include media-breakpoint-down(sm) {
+  .container {
+    height: 100%;
+  }
 }

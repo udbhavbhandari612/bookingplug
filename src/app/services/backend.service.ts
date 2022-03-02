@@ -21,7 +21,11 @@ export class BackendService {
     return this.http.post(`${this.baseUrl}/rides`, params)
   }
 
-  createBooking(params){
+  createBooking(params) {
     return this.http.post(`${this.baseUrl}/bookings`, params)
+  }
+
+  getMisc() {
+    return this.http.get(`${this.baseUrl}/random`)
   }
 }

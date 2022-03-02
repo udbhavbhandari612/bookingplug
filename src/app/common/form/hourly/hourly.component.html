@@ -21,23 +21,20 @@
     <mat-form-field appearance="legacy" class="px-2 w-50">
         <mat-label>Type of Service</mat-label>
         <mat-select>
-            <mat-option value="option1">Option 1</mat-option>
-            <mat-option value="option2">Option 2</mat-option>
-            <mat-option value="option3">Option 3</mat-option>
-            <mat-option value="option3">Option 3</mat-option>
-            <mat-option value="option3">Option 3</mat-option>
+            <mat-option value="option1">Limousine</mat-option>
+            <mat-option value="option2">Prom</mat-option>
         </mat-select>
     </mat-form-field>
     <mat-form-field appearance="legacy" class="px-2 w-50">
         <mat-label>Number of Hours</mat-label>
         <mat-select>
-            <mat-option value="option1">Option 1</mat-option>
-            <mat-option value="option2">Option 2</mat-option>
-            <mat-option value="option3">Option 3</mat-option>
-            <mat-option value="option3">Option 3</mat-option>
-            <mat-option value="option3">Option 3</mat-option>
+            <mat-option value="option1">01</mat-option>
+            <mat-option value="option2">02</mat-option>
+            <mat-option value="option3">03</mat-option>
+            <mat-option value="option3">04</mat-option>
+            <mat-option value="option3">05</mat-option>
         </mat-select>
     </mat-form-field>
-    <button type="button" mat-flat-button class="w-100 fs-5 fw-normal">Calculate My Ride</button>
+    <button type="button" mat-flat-button class="w-100 fs-5 fw-normal" (click)="submit()">Calculate My Ride</button>
 
 </form>

@@ -29,6 +29,7 @@ export class CheckoutComponent implements OnInit {
   booking: any;
   paying: boolean = false;
   agreed: boolean = false;
+  misc: any;
   meetAndGreet = new FormControl(false);
   vehicleForm: FormGroup = new FormGroup({
     vehicle: new FormControl('', [Validators.required])
@@ -60,7 +61,12 @@ export class CheckoutComponent implements OnInit {
       alert('No data passed')
       this.router.navigateByUrl('/')
     }
+    this.fetchMisc();
 
+  }
+
+  fetchMisc() {
+    this.backend.getMisc().subscribe(res => this.misc = res)
   }
 
   async makePayment() {

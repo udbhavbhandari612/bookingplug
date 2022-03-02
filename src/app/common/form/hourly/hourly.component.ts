@@ -12,4 +12,8 @@ export class HourlyComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  submit() {
+    alert('Hourly services will be available soon');
+  }
+
 }
